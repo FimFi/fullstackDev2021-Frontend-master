@@ -5,6 +5,7 @@ import {Observable, Subject, Subscription} from 'rxjs';
 import {debounceTime, take, takeUntil} from 'rxjs/operators';
 import {ChatClient} from './shared/chat-client.model';
 import {ChatMessage} from './shared/chat-message.model';
+import {SendMessageDto} from './shared/send-message.dto';
 
 @Component({
   selector: 'app-chat',
@@ -20,6 +21,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   clients$: Observable<ChatClient[]> | undefined;
   chatClient: ChatClient | undefined;
   error$: Observable<string> | undefined;
+  socketId: string | undefined;
   constructor(private chatService: ChatService) { }
 
   ngOnInit(): void {
@@ -70,8 +72,14 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   sendMessage(): void {
-    this.chatService.sendMessage(this.messageFc.value);
+    if (this.chatClient !== undefined) {
+    const sendMessageDto: SendMessageDto = {
+      chatClientId: this.chatClient.id,
+      message: this.messageFc.value
+    };
+    this.chatService.sendMessage(sendMessageDto);
     this.messageFc.patchValue('');
+    }
   }
 
   sendNickName(): void {

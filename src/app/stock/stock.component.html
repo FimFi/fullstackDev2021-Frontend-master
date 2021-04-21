@@ -1,0 +1,68 @@
+<div class="image" fxFlex [formGroup]="stockFC">
+
+  <div  fxLayout="column" fxFlex="20" style="padding: 20px" fxLayoutGap="10px">
+    <mat-card fxFlex class="example-card">
+      <mat-card-header>
+        <h5 class="black"> Stocks</h5>
+      </mat-card-header>
+
+      <mat-card-content>
+
+        <div *ngIf="stocks$ | async as stocks" fxFlex fxLayout="row">
+          <ul>
+
+            <li class="black btn" type="button" *ngFor="let stock of stocks"
+              [class.selected]="stock=== selectedStock"
+              (click)="onSelect(stock)">
+              {{stock.stockName}}
+            </li>
+          </ul>
+
+        <div fxFlex></div>
+
+        <div>
+          <ul>
+            <li class="black" *ngFor="let stock of stocks">
+            {{stock.currValue}}
+            </li>
+          </ul>
+        </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div>
+  <label>
+    Name:
+    <input type="text" formControlName="stockName">
+  </label>
+
+  <label>
+    Description:
+    <input type="text" formControlName="description">
+  </label>
+
+  <label>
+    Initial Value:
+    <input type="number" formControlName="initValue">
+  </label>
+
+  <label>
+    Current Value:
+    <input type="number" formControlName="currValue">
+  </label>
+  <button type="button" (click)="sendStock()" >Send</button>
+  </div>
+  <div *ngIf="selectedStock" [formGroup]="valueFc">
+    <label> Current value of {{selectedStock.stockName}}</label>
+    <input  formControlName="newValue" value="{{selectedStock.currValue}}">
+    <button (click)="updateStock()"> Update</button>
+    <Button> Delete</Button>
+  </div>
+</div>
+<h4 *ngIf="error" style="color: darkred">{{error}}</h4>
+<div *ngIf="stockCreate">
+  {{stockCreate | json}}
+  <button (click)="stockCreate = undefined">Yeehaaaaaa!</button>
+</div>
